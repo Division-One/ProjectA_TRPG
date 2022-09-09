@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -49,34 +50,33 @@ public class EventManager : MonoBehaviour
     void GenerateData()
     {
         Debug.Log("Generate Data");
+        List<Dictionary<string, object>> mainEventData = CSVReader.Read("Data/MainEventData");
+        List<Dictionary<string, object>> subEventData = CSVReader.Read("Data/SubEventData");
+
         GameEvent gameEvent = new GameEvent(EventType.MAIN_EVENT);
-        EventBlock eventBlock = new EventBlock();
-
-        eventBlock.AddContent(new EventContentText("event 0 start"));
-        eventBlock.AddContent(new EventContentImage("Sprites/img"));
-        eventBlock.AddContent(new EventContentOption("to block 1",1));
-        gameEvent.AddEventBlock(0,eventBlock);
-
-        eventBlock = new EventBlock();
-        eventBlock.AddContent(new EventContentText("event0, second block" ));
-        eventBlock.AddContent(new EventContentImage("Sprites/Logo"));
-        eventBlock.AddContent(new EventContentOption("end Event0, to Event1", 1,true));
-        gameEvent.AddEventBlock(1, eventBlock);
+        for (int i = 0; i < mainEventData.Count; i++)
+        { 
+            var eventBlock = new EventBlock();
+            eventBlock.AddContent(new EventContentText(mainEventData[i]["EventText"].ToString()));
+            eventBlock.AddContent(new EventContentImage("Sprites/" + mainEventData[i]["Image"]));
+            eventBlock.AddContent(new EventContentOption(mainEventData[i]["OptionName"].ToString(),
+               Int32.Parse(mainEventData[i]["connectedNum"].ToString()), Convert.ToBoolean(Int32.Parse(mainEventData[i]["EndOption"].ToString()))));
+            gameEvent.AddEventBlock(i,eventBlock);
+        }
         AddEvent(0, gameEvent);
 
+        
         gameEvent = new GameEvent(EventType.SUB_EVENT);
 
-        eventBlock = new EventBlock();
-        eventBlock.AddContent(new EventContentText("event1 start"));
-        eventBlock.AddContent(new EventContentImage("Sprites/img"));
-        eventBlock.AddContent(new EventContentOption("to event1 second block", 1));
-        gameEvent.AddEventBlock(0, eventBlock);
-
-        eventBlock = new EventBlock();
-        eventBlock.AddContent(new EventContentText("event1 second block"));
-        eventBlock.AddContent(new EventContentImage("Sprites/Logo"));
-        eventBlock.AddContent(new EventContentOption("end Event1, game End", -1, true));
-        gameEvent.AddEventBlock(1, eventBlock);
+        for (int i = 0; i < subEventData.Count; i++)
+        {
+            var eventBlock = new EventBlock();
+            eventBlock.AddContent(new EventContentText(subEventData[i]["EventText"].ToString()));
+            eventBlock.AddContent(new EventContentImage("Sprites/" + subEventData[i]["Image"]));
+            eventBlock.AddContent(new EventContentOption(subEventData[i]["OptionName"].ToString(),
+                Int32.Parse(mainEventData[i]["connectedNum"].ToString()), Convert.ToBoolean(Int32.Parse(subEventData[i]["EndOption"].ToString()))));
+            gameEvent.AddEventBlock(i, eventBlock);
+        }
         AddEvent(1, gameEvent);
     }
     public void ToNextEvent(int eventID)
