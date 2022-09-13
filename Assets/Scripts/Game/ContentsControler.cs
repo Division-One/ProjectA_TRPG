@@ -65,7 +65,6 @@ public class ContentsControler : MonoBehaviour,IDragHandler
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("panelHeight: " + panelHeight + ", contentsHeight: " + contentsHeight + ", contentsTopPos"+ contentsTopPos);
         MoveContentsToTop();
     }
 

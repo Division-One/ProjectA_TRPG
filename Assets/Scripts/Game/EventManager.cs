@@ -40,44 +40,68 @@ public class EventManager : MonoBehaviour
     }
 
 
-    bool AddEvent(int id, GameEvent e)
+    GameEvent AddEvent(int eventID, EventType eventType)
     {
-        if (events.ContainsKey(id)) return false;
-        e.SetEventId(id);
-        events[id] = e;
+        if (events.ContainsKey(eventID)) return null;
+        events[eventID] = new GameEvent(eventID, eventType);
+        return events[eventID];
+    }
+    EventBlock AddEventBlock(int eventID, int blockID)
+    {
+        if (!events.ContainsKey(eventID)) return null;
+        return events[eventID].AddEventBlock(blockID);
+    }
+    bool AddEventContent(int eventID, int blockID, EventContent c)
+    {
+        if (!events.ContainsKey(eventID)) return false;
+        if (!events[eventID].ContainsBlock(blockID)) return false;
+        events[eventID].GetEventBlock(blockID).AddEventContent(c);
+
         return true;
     }
     void GenerateData()
     {
         Debug.Log("Generate Data");
-        List<Dictionary<string, object>> mainEventData = CSVReader.Read("Data/MainEventData");
-        List<Dictionary<string, object>> subEventData = CSVReader.Read("Data/SubEventData");
+        List<List<object>> mainEventData = CSVReader.Parsing("Data/MainEventData");
 
-        GameEvent gameEvent = new GameEvent(EventType.MAIN_EVENT);
         for (int i = 0; i < mainEventData.Count; i++)
-        { 
-            var eventBlock = new EventBlock();
-            eventBlock.AddContent(new EventContentText(mainEventData[i]["EventText"].ToString()));
-            eventBlock.AddContent(new EventContentImage("Sprites/" + mainEventData[i]["Image"]));
-            eventBlock.AddContent(new EventContentOption(mainEventData[i]["OptionName"].ToString(),
-               Int32.Parse(mainEventData[i]["connectedNum"].ToString()), Convert.ToBoolean(Int32.Parse(mainEventData[i]["EndOption"].ToString()))));
-            gameEvent.AddEventBlock(i,eventBlock);
-        }
-        AddEvent(0, gameEvent);
-
-        
-        gameEvent = new GameEvent(EventType.SUB_EVENT);
-
-        for (int i = 0; i < subEventData.Count; i++)
         {
-            var eventBlock = new EventBlock();
-            eventBlock.AddContent(new EventContentText(subEventData[i]["EventText"].ToString()));
-            eventBlock.AddContent(new EventContentImage("Sprites/" + subEventData[i]["Image"]));
-            eventBlock.AddContent(new EventContentOption(subEventData[i]["OptionName"].ToString(),
-                Int32.Parse(mainEventData[i]["connectedNum"].ToString()), Convert.ToBoolean(Int32.Parse(subEventData[i]["EndOption"].ToString()))));
-            gameEvent.AddEventBlock(i, eventBlock);
+            string str ="";
+            foreach (var s in mainEventData[i])
+            {
+                str += s.ToString()+",";
+            }
+            Debug.Log(str.TrimEnd(','));
+            int eventNumber = Int32.Parse(mainEventData[i][0].ToString());
+            int blockNumber = Int32.Parse(mainEventData[i][1].ToString());
+            ContentType contentType = (ContentType)Int32.Parse(mainEventData[i][2].ToString());
+            string content = mainEventData[i][3].ToString();
+
+            Debug.Log("EventNumber: " + eventNumber + ", blockNumber: " + blockNumber + ", contentType: " + contentType + ", content: " + content);
+            AddEvent(eventNumber, EventType.MAIN_EVENT);
+            AddEventBlock(eventNumber, blockNumber);
+            if (contentType == ContentType.TEXT)
+            {
+                AddEventContent(eventNumber, blockNumber, new EventContentText(content));
+            }
+            else if (contentType == ContentType.IMAGE)
+            {
+                AddEventContent(eventNumber, blockNumber, new EventContentImage("Sprites/" + content));
+            }
+            else if (contentType == ContentType.OPTION)
+            {
+                int connectedNumber = Int32.Parse(mainEventData[i][4].ToString());
+                bool endOption = mainEventData[i][5].ToString() == "" ? false : Convert.ToBoolean(Int32.Parse(mainEventData[i][5].ToString()));
+                Debug.Log("connectedNumber: " + connectedNumber );
+                Debug.Log(", endOption: " + (mainEventData[i][5].ToString() == content).ToString());
+                AddEventContent(eventNumber, blockNumber, new EventContentOption(content, connectedNumber, endOption));
+            }
+            else
+            {
+
+            }
+
         }
-        AddEvent(1, gameEvent);
     }
     public void ToNextEvent(int eventID)
     {
