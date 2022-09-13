@@ -10,7 +10,10 @@ public class EventBlock
     Queue<EventContent> contentsQueue = new Queue<EventContent>();
     int blockID;
     int containedContentCount = 0;
-
+    public EventBlock(int id)
+    {
+        blockID = id;
+    }
     public int GetBlockID() { return blockID; }
     public void SetBlockID(int a) { blockID = a; }
     public int GetContainedContentCount() { return containedContentCount; }
@@ -20,7 +23,7 @@ public class EventBlock
     /// </summary>
     /// <param name="content"></param>
     /// <returns>성공여부</returns>
-    public bool AddContent(params EventContent[] content)
+    public bool AddEventContent(params EventContent[] content)
     {
         if (content.Length == 0)return false;
 
@@ -32,6 +35,7 @@ public class EventBlock
 
         return true;
     }
+
     public EventContent GetNextContent()
     {
         if(contentsQueue.Count <= 0)

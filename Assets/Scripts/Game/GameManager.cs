@@ -38,6 +38,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("OnOptionSElected, " + connect + " " + isEndEvent);
         if(isEndEvent == true)
         {
+            if (connect == -1)
+            {
+                GameEnd();
+                return;
+            }
             EventManager.Instance.ToNextEvent(connect);
             ContentsControler.Instance.SetContentsPanel(EventManager.Instance.GetCurrentEvent().GetCurretBlock());
         }
@@ -46,5 +51,9 @@ public class GameManager : MonoBehaviour
             EventManager.Instance.ToNextBlock(connect);
             ContentsControler.Instance.AppendBlock(EventManager.Instance.GetCurrentEvent().GetCurretBlock());
         }
+    }
+    public void GameEnd()
+    {
+        Debug.Log("Game ENd");
     }
 }
