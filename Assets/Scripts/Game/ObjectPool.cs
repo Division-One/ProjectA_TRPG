@@ -50,7 +50,6 @@ public class ObjectPool : MonoBehaviour
     }
     public void Push(GameObject obj)
     {
-        Debug.Log(items.Count );
         reserveCount++;
         useCount++;
         obj.SetActive(false);

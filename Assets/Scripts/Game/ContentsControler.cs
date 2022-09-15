@@ -21,23 +21,57 @@ public class ContentsControler : MonoBehaviour,IDragHandler
         }
     }
     [SerializeField]
-    RectTransform contentsTransfrom;
+    RectTransform elementsParentTransfrom;
     [SerializeField]
-    List<GameObject> contentsUIPrefaps;
+    RectTransform panelTransfrom;
 
-    List<ObjectPool> contentsUIObjectPool = new List<ObjectPool>();
-    List<List<GameObject>> contentsUIObjects = new List<List<GameObject>>();
+    [SerializeField]
+    GameObject textUIPrefaps;
+    [SerializeField]
+    GameObject imageUIPrefaps;
+    [SerializeField]
+    GameObject optionUIPrefap;
 
-    Vector3 contentsTopPos;
-    Vector3 contentsBottomPos;
-    Vector3 currentContentPos;
+    ObjectPool textUIObjectPool;
+    ObjectPool imageUIObjectPool;
+    ObjectPool optionUIObjectPool;
+
+    List<GameObject> textUIObjects = new List<GameObject>();
+    List<GameObject> imageUIObjects = new List<GameObject>();
+    List<GameObject> optionUIObjects = new List<GameObject> ();
+
     float panelHeight;
-    float contentsHeight;
+
+
+    /// <summary>
+    /// 사용자가 맨 위를 보고있을 때 elementsParent의 localPosition
+    /// </summary>
+    float elementsParentTopPos;
+    /// <summary>
+    /// 사용자가 맨 아래를 보고있을 때 elementsParent의 localPosition
+    /// </summary>
+    float elementsParentBottomPos;
+
+
+    /// <summary>
+    /// 사용자가 위 아래로 스크롤 할 수 있는 길이 범위
+    /// </summary>
     float moveLimitY;
+    /// <summary>
+    /// 모든 요소들의 높이 합
+    /// </summary>
+    float elementsHeight;
+    /// <summary>
+    /// 컨텐츠(옵션을 제외한 요소)들의 높이 합
+    /// </summary>
+    float contentsHeight;
+    /// <summary>
+    /// 옵션버튼들의 높이 합
+    /// </summary>
+    float optionsHeight;
     bool isOnTop;
     bool isOnBottom;
 
-    public TextMeshProUGUI t;
 
     private void Awake()
     {
@@ -47,19 +81,20 @@ public class ContentsControler : MonoBehaviour,IDragHandler
             Destroy(this.gameObject);
 
         Canvas.ForceUpdateCanvases();
-        for (ContentType i = 0; i < ContentType.CONTENT_TYPE_COUNT; i++)
-        {
-            contentsUIObjects.Add(new List<GameObject>());
-            contentsUIObjectPool.Add(this.gameObject.AddComponent(typeof(ObjectPool)) as ObjectPool);
-            contentsUIObjectPool[(int)i].Initialize(contentsUIPrefaps[(int)i], contentsTransfrom);
-        }
 
-        panelHeight = transform.gameObject.GetComponent<RectTransform>().rect.height;
-        contentsHeight = GetContentsHeight();
-        moveLimitY = contentsHeight - panelHeight > 0 ? contentsHeight - panelHeight : 0;
-        contentsTopPos = contentsTransfrom.localPosition;
-        currentContentPos = contentsTopPos;
-        contentsBottomPos = contentsTransfrom.localPosition + new Vector3(0, moveLimitY, 0);
+        textUIObjectPool= this.gameObject.AddComponent(typeof(ObjectPool)) as ObjectPool;
+        textUIObjectPool.Initialize(textUIPrefaps, elementsParentTransfrom);
+        imageUIObjectPool = this.gameObject.AddComponent(typeof(ObjectPool)) as ObjectPool;
+        imageUIObjectPool.Initialize(imageUIPrefaps, elementsParentTransfrom);
+        optionUIObjectPool = this.gameObject.AddComponent(typeof(ObjectPool)) as ObjectPool;
+        optionUIObjectPool.Initialize(optionUIPrefap, elementsParentTransfrom);
+
+        panelHeight = panelTransfrom.rect.height;
+        elementsParentTopPos = elementsParentTransfrom.localPosition.y;
+        
+        SetHeights();
+        SetMoveLimitY();
+        SetPositions();
 
     }
     // Start is called before the first frame update
@@ -74,24 +109,37 @@ public class ContentsControler : MonoBehaviour,IDragHandler
         //t.text ="contensPos: "+ contentsTransfrom.localPosition + ", contentsHeight: " + contentsHeight+ ", contentsTopPos" + contentsTopPos;
     }
 
-    float GetContentsHeight()
+    void SetHeights()
     {
         float height = 0;
-        foreach(var obj in contentsUIObjects)
-        {
-            height += t.gameObject.GetComponent<RectTransform>().rect.height;
-        }
 
-        return height;
+        foreach(var item in textUIObjects)
+            height+= item.GetComponent<RectTransform>().rect.height;
+        foreach (var item in imageUIObjects)
+            height += item.GetComponent<RectTransform>().rect.height;
+        contentsHeight = height;
+
+        foreach (var item in optionUIObjects)
+            height += item.GetComponent<RectTransform>().rect.height;
+
+        elementsHeight = height;
+        optionsHeight = elementsHeight - contentsHeight;
     }
-
+    void SetMoveLimitY()
+    {
+        moveLimitY= elementsHeight - panelHeight > 0 ? elementsHeight - panelHeight : 0;
+    }
+    void SetPositions()
+    {
+        elementsParentBottomPos = elementsParentTopPos + moveLimitY;
+    }
     /// <summary>
     /// 컨텐츠 이동
     /// </summary>
     /// <param name="amount">움직일 거리</param>
     void MoveContentsY(float amount)
     {
-        contentsTransfrom.position += new Vector3(0, amount, 0);
+        elementsParentTransfrom.position += new Vector3(0, amount, 0);
         isOnBottom = false;
         isOnTop = false;
     }
@@ -100,7 +148,7 @@ public class ContentsControler : MonoBehaviour,IDragHandler
     /// </summary>
     public void MoveContentsToTop()
     {
-        contentsTransfrom.localPosition = contentsTopPos;
+        elementsParentTransfrom.localPosition = new Vector3(0,elementsParentTopPos,0);        
         isOnTop = true;
     }
     /// <summary>
@@ -108,53 +156,122 @@ public class ContentsControler : MonoBehaviour,IDragHandler
     /// </summary>
     public void MoveContentsToBot()
     {
-        contentsTransfrom.localPosition = contentsBottomPos;
+        elementsParentTransfrom.localPosition = new Vector3(0, elementsParentBottomPos, 0); ;
         isOnBottom = true;
     }
-
+    void ClearElements()
+    {
+        ClearContents();
+        ClearOptions();
+    }
     public void ClearContents()
     {
-        for (ContentType i = 0; i < ContentType.CONTENT_TYPE_COUNT; i++)
+        foreach (var item in textUIObjects)
         {
-            foreach (var j in contentsUIObjects[(int)i])
-            {
-                contentsUIObjectPool[(int)i].Push(j);
-            }
+            textUIObjectPool.Push(item);
         }
-        currentContentPos = contentsTopPos;
+        textUIObjects.Clear();
+        foreach (var item in imageUIObjects)
+        {
+            imageUIObjectPool.Push(item);
+        }
+        imageUIObjects.Clear();
+        elementsParentBottomPos = elementsParentTopPos;
+
+        contentsHeight = 0;
+        elementsHeight = optionsHeight;
+        SetMoveLimitY();
+        SetPositions();
+        MoveContentsToTop();
     }
-    void SetUIObjectPosition(GameObject obj)
+    void ClearOptions()
     {
+        foreach (var item in optionUIObjects)
+        {
+            optionUIObjectPool.Push(item);
+        }
+        optionUIObjects.Clear();
+        Debug.Log("count: " + optionUIObjects.Count);
+        optionsHeight = 0;
+        elementsHeight = contentsHeight;
+        SetMoveLimitY();
+        SetPositions();
+        Debug.Log( "ClearOptions-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY + ", elementsBottomPos: " + elementsParentBottomPos);
+    }
+    void SetContentsPosition(GameObject obj)
+    {
+        Canvas.ForceUpdateCanvases();
 
-        Debug.Log("Move "+obj.ToString() + " to "+ currentContentPos);
-        Debug.Log("obj height: " + obj.GetComponent<RectTransform>().rect);
-        obj.GetComponent<RectTransform>().position = new Vector3(0, 0, 0);
+        RectTransform t = obj.GetComponent<RectTransform>();
+        t.localPosition = new Vector3(0, elementsParentTopPos - contentsHeight, 0);
+        t.offsetMax = new Vector2(0, t.offsetMax.y);
+        t.offsetMin = new Vector2(0, t.offsetMin.y);
+        elementsHeight += t.rect.height;
+        contentsHeight += t.rect.height;
+        SetMoveLimitY();
+        SetPositions();
+        Debug.Log("height: " + t.rect.height+"-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY+ ", elementsBottomPos: " + elementsParentBottomPos);
 
+    }
+    void SetOptionsPosition(GameObject obj)
+    {
+        Canvas.ForceUpdateCanvases();
 
+        RectTransform t = obj.GetComponent<RectTransform>();
+        t.localPosition = new Vector3(0, elementsParentTopPos - elementsHeight, 0);
+        t.offsetMax = new Vector2(0, t.offsetMax.y);
+        t.offsetMin = new Vector2(0, t.offsetMin.y);
+        elementsHeight += t.rect.height;
+        optionsHeight += t.rect.height;
+        SetMoveLimitY();
+        SetPositions();
+        Debug.Log("height: " + t.rect.height + "-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY + ", elementsBottomPos: " + elementsParentBottomPos);
 
-        Debug.Log("Set currentContentPos to" + currentContentPos);
+    }
+    public void AppendContent(EventContent content)
+    {
+        EventElementType type = content.eventElementType;
+        GameObject obj;
+        switch (type)
+        {
+            case EventElementType.TEXT:
+                obj = textUIObjectPool.Pop();
+                textUIObjects.Add(obj);
+                break;
+            case EventElementType.IMAGE:
+                obj = imageUIObjectPool.Pop();
+                imageUIObjects.Add(obj);
+                break;
+            default:
+                return;
+        }
+       
+        content.SetElementToUIObject(obj);
 
+        SetContentsPosition(obj);
+    }
+    void AppendOption(EventOption option)
+    {
+        var obj = optionUIObjectPool.Pop();
+        optionUIObjects.Add(obj);
+        option.SetElementToUIObject(obj);
+
+        SetOptionsPosition(obj);
     }
     public void AppendBlock(EventBlock eventBlock)
     {
-        EventContent content;
-        content = eventBlock.GetNextContent();
+        ClearOptions();
+        EventContent content = eventBlock.GetNextContent();
         while(content != null)
         {
-            var obj = contentsUIObjectPool[(int)content.contentType].Pop();
-            content.SetContentToUIObject( obj);
-            contentsUIObjects[(int)content.contentType].Add(obj);
-            Canvas.ForceUpdateCanvases();
-
-            RectTransform t = obj.GetComponent<RectTransform>();
-            t.localPosition = currentContentPos;
-            t.offsetMax = new Vector2(0, t.offsetMax.y);
-            t.offsetMin = new Vector2(0, t.offsetMin.y);
-            currentContentPos -= new Vector3(0, t.rect.height, 0);
-            //SetUIObjectPosition(obj);
-   
-
+            AppendContent(content);
             content = eventBlock.GetNextContent();
+        }
+        EventOption option = eventBlock.GetNextOption();
+        while (option != null)
+        {
+            AppendOption(option);
+            option = eventBlock.GetNextOption();
         }
 
 
@@ -167,32 +284,31 @@ public class ContentsControler : MonoBehaviour,IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        t.text = "eventData.delta.y : " + eventData.delta.y + ", contensPos: " + contentsTransfrom.localPosition;
         if (moveLimitY == 0) return;
 
         float beforePos, afterPos;
         if (eventData.delta.y < 0)//아래로 드래그하면
         {
-            beforePos = contentsTransfrom.localPosition.y;
+            beforePos = elementsParentTransfrom.localPosition.y;
             afterPos = beforePos + eventData.delta.y;
 
             if (isOnTop) return;
 
-            if (afterPos < contentsTopPos.y)//맨 위에 보고 있을 때
+            if (afterPos < elementsParentTopPos)//맨 위에 보고 있을 때
             {
                 MoveContentsToTop();
                 return;
             }
 
         }
-        else//아래로 드래그하면
+        else//위로 드래그하면
         {
-            beforePos = contentsTransfrom.localPosition.y;
+            beforePos = elementsParentTransfrom.localPosition.y;
             afterPos = beforePos + eventData.delta.y;
 
             if (isOnBottom) return;
 
-            if (afterPos > contentsBottomPos.y)//맨 아래 보고 있을 때
+            if (afterPos > elementsParentBottomPos)//맨 아래 보고 있을 때
             {
                 MoveContentsToBot();
                 return;

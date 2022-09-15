@@ -8,40 +8,54 @@ using System;
 public class EventBlock 
 {
     Queue<EventContent> contentsQueue = new Queue<EventContent>();
+    Queue<EventOption> optionQueue = new Queue<EventOption>();
     int blockID;
-    int containedContentCount = 0;
     public EventBlock(int id)
     {
         blockID = id;
     }
     public int GetBlockID() { return blockID; }
-    public void SetBlockID(int a) { blockID = a; }
-    public int GetContainedContentCount() { return containedContentCount; }
-
+    public EventContent GetNextContent()
+    {
+        if (contentsQueue.Count <= 0)
+            return null;
+        return contentsQueue.Dequeue();
+    }
+    public EventOption GetNextOption()
+    {
+        if (optionQueue.Count <= 0)
+            return null;
+        return optionQueue.Dequeue();
+    }
     /// <summary>
     /// Block에 contents 추가
     /// </summary>
-    /// <param name="content"></param>
+    /// <param name="contents"></param>
     /// <returns>성공여부</returns>
-    public bool AddEventContent(params EventContent[] content)
+    public bool AddEventContent(params EventContent[] contents)
     {
-        if (content.Length == 0)return false;
+        if (contents.Length == 0)return false;
 
-        foreach (var contentItem in content)
+        foreach (var contentItem in contents)
         {
-            contentItem.SetContentIndex(containedContentCount++);
+
             contentsQueue.Enqueue(contentItem);
         }
 
         return true;
     }
-
-    public EventContent GetNextContent()
+    public bool AddEventOption(params EventOption[] options)
     {
-        if(contentsQueue.Count <= 0)
-            return null;
-        return contentsQueue.Dequeue();
+        if(options.Length == 0)return false;
+
+        foreach(var option in options)
+        {
+            optionQueue.Enqueue(option);
+        }
+
+        return true;
     }
+
 
 
 }
