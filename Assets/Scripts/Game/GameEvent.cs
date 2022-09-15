@@ -10,7 +10,6 @@ public enum EventType
 
 public class GameEvent
 {
-
     EventType eventType;
     Dictionary<int,EventBlock> eventBlocks = new Dictionary<int, EventBlock>();
     int currentBlockID = 0;

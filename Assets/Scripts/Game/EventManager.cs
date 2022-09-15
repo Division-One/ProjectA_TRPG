@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class EventManager : MonoBehaviour
 {
     private static EventManager instance = null;
@@ -25,7 +26,6 @@ public class EventManager : MonoBehaviour
         else
             Destroy(this.gameObject);
 
-        GenerateData();
     }
     // Start is called before the first frame update
     void Start()
@@ -59,42 +59,43 @@ public class EventManager : MonoBehaviour
 
         return true;
     }
-    void GenerateData()
+    bool AddEventOption(int eventID, int blockID, EventOption o)
+    {
+        if (!events.ContainsKey(eventID)) return false;
+        if (!events[eventID].ContainsBlock(blockID)) return false;
+        events[eventID].GetEventBlock(blockID).AddEventOption(o);
+
+        return true;
+    }
+    public void GenerateData()
     {
         Debug.Log("Generate Data");
         List<List<object>> mainEventData = CSVReader.Parsing("Data/MainEventData");
 
         for (int i = 0; i < mainEventData.Count; i++)
         {
-            string str ="";
-            foreach (var s in mainEventData[i])
-            {
-                str += s.ToString()+",";
-            }
-            Debug.Log(str.TrimEnd(','));
-            int eventNumber = Int32.Parse(mainEventData[i][0].ToString());
-            int blockNumber = Int32.Parse(mainEventData[i][1].ToString());
-            ContentType contentType = (ContentType)Int32.Parse(mainEventData[i][2].ToString());
-            string content = mainEventData[i][3].ToString();
+            int eventNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_NUMBER_IDX].ToString());
+            int blockNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_BLOCK_IDX].ToString());
+            EventElementType elemType = (EventElementType)Int32.Parse(mainEventData[i][Constants.CSV_EVENT_ELEMTYPE_IDX].ToString());
+            string content = mainEventData[i][Constants.CSV_EVENT_CONTENT_IDX].ToString();
 
-            Debug.Log("EventNumber: " + eventNumber + ", blockNumber: " + blockNumber + ", contentType: " + contentType + ", content: " + content);
+            //Debug.Log("eventNumber: "+ eventNumber+ ", blockNumber: " + blockNumber+ ", elemType: "+ elemType+ ", content:"+ content);
             AddEvent(eventNumber, EventType.MAIN_EVENT);
             AddEventBlock(eventNumber, blockNumber);
-            if (contentType == ContentType.TEXT)
+            if (elemType == EventElementType.TEXT)
             {
                 AddEventContent(eventNumber, blockNumber, new EventContentText(content));
             }
-            else if (contentType == ContentType.IMAGE)
+            else if (elemType == EventElementType.IMAGE)
             {
                 AddEventContent(eventNumber, blockNumber, new EventContentImage("Sprites/" + content));
             }
-            else if (contentType == ContentType.OPTION)
+            else if (elemType == EventElementType.OPTION)
             {
-                int connectedNumber = Int32.Parse(mainEventData[i][4].ToString());
-                bool endOption = mainEventData[i][5].ToString() == "" ? false : Convert.ToBoolean(Int32.Parse(mainEventData[i][5].ToString()));
-                Debug.Log("connectedNumber: " + connectedNumber );
-                Debug.Log(", endOption: " + (mainEventData[i][5].ToString() == content).ToString());
-                AddEventContent(eventNumber, blockNumber, new EventContentOption(content, connectedNumber, endOption));
+                int connectedNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_CONNNUMBER_IDX].ToString());
+                string tmpEndOp = mainEventData[i][Constants.CSV_EVENT_ISENDOP_IDX].ToString();
+                bool endOption = tmpEndOp == "" ? false : Convert.ToBoolean(Int32.Parse(tmpEndOp));
+                AddEventOption(eventNumber, blockNumber, new EventOption(content, connectedNumber, endOption));
             }
             else
             {

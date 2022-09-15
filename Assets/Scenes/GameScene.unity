@@ -869,12 +869,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fb46f96fe73fd042a515e97442ee6cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  contentsTransfrom: {fileID: 199223213}
-  contentsUIPrefaps:
-  - {fileID: 5081668275225090745, guid: 666dc5a8a1268b342abaa0afaa58f4b5, type: 3}
-  - {fileID: 8062050862262100567, guid: efbf7d10742a5e54eb1c8a8c01163022, type: 3}
-  - {fileID: 2682648368741323420, guid: c3021818eff726f4a82170d2e1433ef1, type: 3}
-  t: {fileID: 543035075}
+  elementsParentTransfrom: {fileID: 199223213}
+  panelTransfrom: {fileID: 1602924046}
+  textUIPrefaps: {fileID: 5081668275225090745, guid: 666dc5a8a1268b342abaa0afaa58f4b5, type: 3}
+  imageUIPrefaps: {fileID: 8062050862262100567, guid: efbf7d10742a5e54eb1c8a8c01163022, type: 3}
+  optionUIPrefap: {fileID: 2682648368741323420, guid: c3021818eff726f4a82170d2e1433ef1, type: 3}
 --- !u!1 &1770511589
 GameObject:
   m_ObjectHideFlags: 0
