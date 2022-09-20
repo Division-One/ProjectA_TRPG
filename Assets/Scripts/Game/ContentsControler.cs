@@ -191,7 +191,7 @@ public class ContentsControler : MonoBehaviour,IDragHandler
             optionUIObjectPool.Push(item);
         }
         optionUIObjects.Clear();
-        Debug.Log("count: " + optionUIObjects.Count);
+        Debug.Log("ClearOptions count: " + optionUIObjects.Count);
         optionsHeight = 0;
         elementsHeight = contentsHeight;
         SetMoveLimitY();
@@ -200,32 +200,34 @@ public class ContentsControler : MonoBehaviour,IDragHandler
     }
     void SetContentsPosition(GameObject obj)
     {
-        Canvas.ForceUpdateCanvases();
-
         RectTransform t = obj.GetComponent<RectTransform>();
         t.localPosition = new Vector3(0, elementsParentTopPos - contentsHeight, 0);
         t.offsetMax = new Vector2(0, t.offsetMax.y);
         t.offsetMin = new Vector2(0, t.offsetMin.y);
-        elementsHeight += t.rect.height;
-        contentsHeight += t.rect.height;
+        Canvas.ForceUpdateCanvases();
+        float height = t.rect.height;
+        elementsHeight += height;
+        contentsHeight += height;
         SetMoveLimitY();
         SetPositions();
-        Debug.Log("height: " + t.rect.height+"-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY+ ", elementsBottomPos: " + elementsParentBottomPos);
+
+        Debug.Log("height: " + height + "-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY+ ", elementsBottomPos: " + elementsParentBottomPos);
 
     }
     void SetOptionsPosition(GameObject obj)
     {
-        Canvas.ForceUpdateCanvases();
-
         RectTransform t = obj.GetComponent<RectTransform>();
+
         t.localPosition = new Vector3(0, elementsParentTopPos - elementsHeight, 0);
         t.offsetMax = new Vector2(0, t.offsetMax.y);
         t.offsetMin = new Vector2(0, t.offsetMin.y);
-        elementsHeight += t.rect.height;
-        optionsHeight += t.rect.height;
+        Canvas.ForceUpdateCanvases();
+        float height = t.rect.height;
+        elementsHeight += height;
+        optionsHeight += height;
         SetMoveLimitY();
         SetPositions();
-        Debug.Log("height: " + t.rect.height + "-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY + ", elementsBottomPos: " + elementsParentBottomPos);
+        Debug.Log("height: " + height + "-> elementsHeight: " + elementsHeight + ", moveLimitY:" + moveLimitY + ", elementsBottomPos: " + elementsParentBottomPos);
 
     }
     public void AppendContent(EventContent content)
