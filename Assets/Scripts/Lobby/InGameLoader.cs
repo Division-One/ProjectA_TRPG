@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 
 
-public class InGameLoadingUIControler : LoadingUIControler
+public class InGameLoader : Loader
 {
-    private static InGameLoadingUIControler instance = null;
-    public static InGameLoadingUIControler Instance
+    private static InGameLoader instance = null;
+    public static InGameLoader Instance
     {
         get
         {
@@ -24,7 +24,6 @@ public class InGameLoadingUIControler : LoadingUIControler
             instance = this;
         else
             Destroy(this.gameObject);
-        this.gameObject.SetActive(false);
 
     }
 
@@ -32,4 +31,5 @@ public class InGameLoadingUIControler : LoadingUIControler
     TextMeshProUGUI tipContent;
     [SerializeField]
     Image portrait;
+
 }

@@ -6,7 +6,12 @@ using System.Text.RegularExpressions;
 public class CSVReader {
     static string SPLIT_RE = @",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))";  
     static string LINE_SPLIT_RE = @"\r\n(?=(?:[^""]*""[^""]*"")*(?![^""]*""))"; 
-    static char[] TRIM_CHARS = { '\"' }; 
+    static char[] TRIM_CHARS = { '\"' };
+    /// <summary>
+    /// CSV파일을 읽어 Dictionary로 반환
+    /// </summary>
+    /// <param name="file">읽을 CSV파일 이름</param>
+    /// <returns>읽은 CSV파일 내용</returns>
     public static List<Dictionary<string, object>> Read(string file) 
     { 
         var list = new List<Dictionary<string, object>>(); 
@@ -32,6 +37,11 @@ public class CSVReader {
         } 
         return list; 
     } 
+    /// <summary>
+    /// CSV파일을 읽어 List로 반환
+    /// </summary>
+    /// <param name="file">읽을 CSV파일 이름</param>
+    /// <returns>읽은 CSV파일 내용</returns>
     public static List<List<object>> Parsing(string file) 
     { 
         var list = new List<List<object>>(); 

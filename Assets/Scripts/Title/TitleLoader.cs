@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 
 
-public class TitleLoadingUIControler : LoadingUIControler
+public class TitleLoader : Loader
 {
-    private static TitleLoadingUIControler instance = null;
-    public static TitleLoadingUIControler Instance
+    private static TitleLoader instance = null;
+    public static TitleLoader Instance
     {
         get
         {
@@ -32,4 +32,21 @@ public class TitleLoadingUIControler : LoadingUIControler
     }
     [SerializeField]
     TextMeshProUGUI loadingContent;
+
+    /// <summary>
+    /// 게임 업데이트.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator GameUpdate()
+    {
+        SetLoadingContent("GameUpdate...");
+        yield return new WaitForSeconds(2);
+        SetProgressBar(0.3f);
+    }
+    public IEnumerator SystemLoading()
+    {
+        SetLoadingContent("SystemLoading...");
+        yield return new WaitForSeconds(2);
+        SetProgressBar(0.6f);
+    }
 }

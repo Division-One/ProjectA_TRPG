@@ -45,64 +45,32 @@ public class TitleManager : MonoBehaviour
     }
     IEnumerator UpdateProgressBar()
     {
-        while(progress < 100)
+        while(progress < 1f)
         {
             yield return null;
 
-            TitleLoadingUIControler.Instance.SetProgressBar(progress);
+            TitleLoader.Instance.SetProgressBar(progress);
         }
         gameStartButton.SetActive(true);
     }
     IEnumerator StartPrework()
     {
-        TitleLoadingUIControler.Instance.SetProgressBar(0);
+        //TitleLoadingUIControler.Instance.SetProgressBar(0);
         progress = 0;
-        TitleLoadingUIControler.Instance.SetLoadingContent("GameUpdate...");
-        yield return StartCoroutine(GameUpdate());
-        progress = 30;
-        TitleLoadingUIControler.Instance.SetLoadingContent("SystemLoading...");
-        yield return StartCoroutine(SystemLoading());
-        progress = 60;
-        TitleLoadingUIControler.Instance.SetLoadingContent("SceneLoading...");
-        float timer = 0f;
-        float remainProgress = 100 - progress;
-        op = SceneManager.LoadSceneAsync("GameScene");
-        op.allowSceneActivation = false;
 
-        while (!op.isDone)
-        {
-            yield return null;
-            if (op.progress < 0.9f)
-            {
-                progress += op.progress * remainProgress / 100;
-            }
-            else
-            {
-                timer += Time.unscaledDeltaTime;
-                progress = Mathf.Lerp(progress, 100, timer);
-                if (progress >= 100)
-                {
-                    TitleLoadingUIControler.Instance.SetLoadingContent("Load Complete");
-                    yield break;
-                }
-            }
-        }
+        yield return StartCoroutine(TitleLoader.Instance.GameUpdate());
+        progress = 0.3f;
+
+
+        yield return StartCoroutine(TitleLoader.Instance.SystemLoading());
+        progress = 0.6f;
+
+        TitleLoader.Instance.SetLoadingContent("SceneLoading...");
+        yield return StartCoroutine(TitleLoader.Instance.LoadGameSceneAsync("Lobby",progress));
+       
 
     }
 
 
-    /// <summary>
-    /// 게임 업데이트.
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator GameUpdate()
-    {
-        Debug.Log("GameUpdate");
-        yield return new WaitForSeconds(2);
-    }
-    public IEnumerator SystemLoading()
-    {
-        Debug.Log("SystemLoading");
-        yield return new WaitForSeconds(2);
-    }
+    
 }
