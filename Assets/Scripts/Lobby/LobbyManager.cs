@@ -35,6 +35,7 @@ public class LobbyManager : MonoBehaviour
     public void GameStartButton()
     {
         lobbyCanvas.SetActive(false);
+        StartCoroutine(InGameLoader.Instance.UpdateTipContent(4));
         StartCoroutine(InGameLoader.Instance.LoadGameSceneAsync("GameScene"));
     }
    

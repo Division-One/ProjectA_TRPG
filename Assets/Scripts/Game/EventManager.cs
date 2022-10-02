@@ -67,19 +67,20 @@ public class EventManager : MonoBehaviour
 
         return true;
     }
-    public void GenerateData()
+    /// <summary>
+    /// CSV파일 읽어 이벤트 데이터 생성
+    /// </summary>
+    public void GenerateEventData()
     {
-        Debug.Log("Generate Data");
         List<List<object>> mainEventData = CSVReader.Parsing("Data/MainEventData");
 
         for (int i = 0; i < mainEventData.Count; i++)
         {
-            int eventNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_NUMBER_IDX].ToString());
+            int eventNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_ID_IDX].ToString());
             int blockNumber = Int32.Parse(mainEventData[i][Constants.CSV_EVENT_BLOCK_IDX].ToString());
             EventElementType elemType = (EventElementType)Int32.Parse(mainEventData[i][Constants.CSV_EVENT_ELEMTYPE_IDX].ToString());
             string content = mainEventData[i][Constants.CSV_EVENT_CONTENT_IDX].ToString();
 
-            //Debug.Log("eventNumber: "+ eventNumber+ ", blockNumber: " + blockNumber+ ", elemType: "+ elemType+ ", content:"+ content);
             AddEvent(eventNumber, EventType.MAIN_EVENT);
             AddEventBlock(eventNumber, blockNumber);
             if (elemType == EventElementType.TEXT)
@@ -104,13 +105,25 @@ public class EventManager : MonoBehaviour
 
         }
     }
+    /// <summary>
+    /// 현재 event를 eventID에 해당하는 event로 전환
+    /// </summary>
+    /// <param name="eventID">전환할 event의 ID</param>
     public void ToNextEvent(int eventID)
     {
         currentEventID = eventID; 
     }
+    /// <summary>
+    /// 현재 event Block을 blockID에 해당하는 event Block으로 전환
+    /// </summary>
+    /// <param name="blockID"></param>
     public void ToNextBlock(int blockID)
     {
         events[currentEventID].SetCurrentBlock(blockID);
     }
+    /// <summary>
+    /// 현재 event를 반환
+    /// </summary>
+    /// <returns>현재 event</returns>
     public GameEvent GetCurrentEvent() { return events[currentEventID]; }
 }
