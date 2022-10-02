@@ -14,6 +14,10 @@ public class Loader : MonoBehaviour
     {
         progressBar.fillAmount = progress;
     }
+    public float GetProgress()
+    {
+        return progressBar.fillAmount;
+    }
     /// <summary>
     /// 씬을 Load하면서 progressBar의 진행도를 함께 조작
     /// </summary>
@@ -39,8 +43,8 @@ public class Loader : MonoBehaviour
             }
             else
             {
-                timer += Time.unscaledDeltaTime;
-                progressBar.fillAmount = Mathf.Lerp(progressBar.fillAmount, 1f, timer);
+                timer += Time.unscaledDeltaTime / 2;
+                progressBar.fillAmount = Mathf.Lerp(fakeLoadStartProgress, 1f, timer);
                 if (progressBar.fillAmount >= 1f)
                 {
                     op.allowSceneActivation = true;
