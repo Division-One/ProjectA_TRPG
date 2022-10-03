@@ -325,6 +325,7 @@ GameObject:
   - component: {fileID: 830302665}
   - component: {fileID: 830302667}
   - component: {fileID: 830302666}
+  - component: {fileID: 830302668}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -374,8 +375,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Game Start
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
+  m_sharedMaterial: {fileID: 7126041168094234136, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -449,6 +450,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 830302664}
   m_CullTransparentMesh: 1
+--- !u!114 &830302668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830302664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!1 &1579036544
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,6 +731,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 146193963}
     m_Modifications:
+    - target: {fileID: 752917798655676849, guid: f1c478fb2b6df6145b95cd4f98fc7914, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
+    - target: {fileID: 752917798655676849, guid: f1c478fb2b6df6145b95cd4f98fc7914, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 7126041168094234136, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
     - target: {fileID: 752917798655676851, guid: f1c478fb2b6df6145b95cd4f98fc7914, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
