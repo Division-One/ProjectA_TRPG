@@ -63,4 +63,8 @@ public class LobbyManager : MonoBehaviour
     {
         SwitchCanvas(CanvasType.Store);
     }
+    public void ToLobby()
+    {
+        SwitchCanvas(CanvasType.Lobby);
+    }
 }
