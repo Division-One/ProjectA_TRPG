@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class TabGroup : MonoBehaviour
 {
-    public List<TabButton> tabButtons;
     [SerializeField]
     Sprite tabIdle;
     [SerializeField]
@@ -13,25 +12,28 @@ public class TabGroup : MonoBehaviour
     [SerializeField]
     Sprite tabActive;
 
-    public TabButton selectedTab;
+    public List<TabButton> tabButtons;
     public List<GameObject> objectsToSwap;
+    public TabButton selectedTab;
+    public int selectedTabIndex = 0;
 
+    private void Awake()
+    {
+        tabButtons = new List<TabButton>();
+        var collection = GetComponentsInChildren<TabButton>();
+        int idx = 0;
+        foreach (var item in collection)
+        {
+            tabButtons.Add(item);
+            item.myIndex = idx;
+            idx++;
+        }
+
+
+    }
     private void Start()
     {
-        OnTabSelected(tabButtons[0]);
-    }
-    public void Subscribe(TabButton button)
-    {
-        if(tabButtons == null)
-        {
-            tabButtons = new List<TabButton>();
-        }
-        tabButtons.Add(button);
-    }
-
-    public GameObject GetTab(TabButton t)
-    {
-        return objectsToSwap[t.transform.GetSiblingIndex()];
+        OnTabSelected(tabButtons[selectedTabIndex]);
     }
     public void OnTabEnter(TabButton button)
     {
@@ -50,17 +52,16 @@ public class TabGroup : MonoBehaviour
         {
             selectedTab.Deselect();
         }
+        selectedTabIndex = button.myIndex;
         selectedTab = button;
         selectedTab.Select();
 
-        selectedTab = button;
         ResetTabs();
         button.background.sprite = tabActive;
-        int index = button.transform.GetSiblingIndex();
         int count = objectsToSwap.Count;
         for (int i = 0; i < count; i++)
         {
-            if (i == index)
+            if (i == button.myIndex)
                 objectsToSwap[i].SetActive(true);
             else
                 objectsToSwap[i].SetActive(false);
@@ -71,7 +72,7 @@ public class TabGroup : MonoBehaviour
     { 
         foreach(TabButton button in tabButtons)
         {
-            if (selectedTab != null && button == selectedTab) continue;
+            if (selectedTab != null && button.myIndex == selectedTabIndex) continue;
             button.background.sprite = tabIdle;
         }
     }

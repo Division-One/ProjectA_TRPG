@@ -62,7 +62,7 @@ public class CollectionBookManager : MonoBehaviour
         foreach (var tabButton in tabView.tabButtons)
         {
             tabButton.onTabSelected.AddListener(delegate {
-                SetPrevNextButtonTabView(tabView.GetTab(tabButton).GetComponent<CollectionBookTab>());
+                SetPrevNextButtonTabView(tabView.objectsToSwap[tabButton.myIndex].GetComponent<CollectionBookTab>());
             });
         }
 
@@ -82,7 +82,7 @@ public class CollectionBookManager : MonoBehaviour
         goBackButton.onClick.RemoveAllListeners();
         goBackButton.onClick.AddListener(LobbyManager.Instance.ToLobby);
 
-        currentSelectedTab = tabView.GetTab(tabView.selectedTab).GetComponent<CollectionBookTab>();
+        currentSelectedTab = tabView.objectsToSwap[tabView.selectedTabIndex].GetComponent<CollectionBookTab>();
         SetPrevNextButtonTabView(currentSelectedTab);
 
         detailInfoView.gameObject.SetActive(false);
