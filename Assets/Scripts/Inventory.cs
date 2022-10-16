@@ -8,7 +8,7 @@ public class Inventory: MonoBehaviour
 {
     public int horizontalSlotCount = 6;
     public int verticalSlotCount = 2;
-    public GameObject slotObject;
+    public GameObject slotPrefab;
     private void Awake()
     {
         RectTransform rectTransform = GetComponent<RectTransform>();
@@ -17,7 +17,7 @@ public class Inventory: MonoBehaviour
             verticalSlotCount * grid.cellSize.y + (verticalSlotCount - 1) * grid.spacing.y);
         for(int i = 0; i < verticalSlotCount*horizontalSlotCount; i++)
         {
-            Instantiate(slotObject, transform);
+            Instantiate(slotPrefab, transform);
         }
 
     }

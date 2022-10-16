@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-public class FillingRoomControl: MonoBehaviour
+public class SeparatedVolume: MonoBehaviour
 {
     [SerializeField]
     Image fill;
