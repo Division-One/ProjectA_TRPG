@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
+    #region singletone
     private static EventManager instance = null;
     Dictionary<int,GameEvent> events = new Dictionary<int,GameEvent>();
     int currentEventID = 0;
@@ -28,6 +29,7 @@ public class EventManager : MonoBehaviour
 
     }
     // Start is called before the first frame update
+    #endregion singletone
     void Start()
     {
         
