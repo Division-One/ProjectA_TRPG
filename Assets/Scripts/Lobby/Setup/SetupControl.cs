@@ -17,6 +17,6 @@ public class SetupControl : MonoBehaviour
     }
     public void CloseButton()
     {
-        LobbyManager.Instance.SwitchCanvas(LobbyManager.CanvasType.Lobby);
+        LobbyManager.Instance.SwitchCanvas(LobbyManager.LobbyCanvasType.Lobby);
     }
 }
