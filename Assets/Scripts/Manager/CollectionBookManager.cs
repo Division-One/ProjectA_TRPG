@@ -59,6 +59,7 @@ public class CollectionBookManager : MonoBehaviour
     public void Initiate()
     {
         GenerateCollectionData();
+        tabView.Initiate();
         foreach (var tabButton in tabView.tabButtons)
         {
             tabButton.onTabSelected.AddListener(delegate {
