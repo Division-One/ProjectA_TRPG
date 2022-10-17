@@ -19,6 +19,12 @@ public class TabGroup : MonoBehaviour
 
     private void Awake()
     {
+
+
+
+    }
+    public void Initiate()
+    {
         tabButtons = new List<TabButton>();
         var collection = GetComponentsInChildren<TabButton>();
         int idx = 0;
@@ -28,8 +34,6 @@ public class TabGroup : MonoBehaviour
             item.myIndex = idx;
             idx++;
         }
-
-
     }
     private void Start()
     {
