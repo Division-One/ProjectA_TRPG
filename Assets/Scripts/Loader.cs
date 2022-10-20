@@ -4,53 +4,88 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Loader : MonoBehaviour
+public class Loader 
 {
-    [SerializeField]
+    public delegate void LoadTask();
+    event LoadTask taskEvent;
     Image progressBar;
+    TextMeshProUGUI loadingText;
+    bool autoSceneChange;
 
-    public void SetProgressBar(float progress)
+    int taskCount;
+    int completedTaskCount = 0;
+    bool separateLoad = false;
+    List<string> loadingTextStrings;
+    public AsyncOperation sceneLoadingOp;
+
+    public Loader(Image progressBar, bool autoSceneChange, TextMeshProUGUI loadingText = null)
     {
-        progressBar.fillAmount = progress;
+        this.progressBar = progressBar;
+        this.autoSceneChange = autoSceneChange;
+        this.loadingText = loadingText;
+        if (loadingText != null)
+        {
+            loadingTextStrings = new List<string>();
+        }
+    }
+    public void AddLoadingTask(LoadTask task, string loadingText = null)
+    {
+        taskCount++;
+        if(loadingText != null)
+            loadingTextStrings.Add(loadingText);
+        taskEvent += BeforeTask;
+        taskEvent += task;
+        taskEvent+= AfterTask;
+    }
+    public void StartLoad()
+    {
+        if(taskEvent != null)
+            taskEvent.Invoke();
+    }
+    /// <summary>
+    /// 임시함수
+    /// </summary>
+    /// <param name="loadingTexts"></param>
+    public void SeparatedLoading(List<string> loadingTexts)
+    {
+        separateLoad = true;
+        loadingTextStrings = loadingTexts;
     }
     public float GetProgress()
     {
         return progressBar.fillAmount;
     }
+    void BeforeTask()
+    {
+        if (loadingText != null)
+            if(!separateLoad && completedTaskCount < loadingTextStrings.Count)
+                loadingText.text = loadingTextStrings[completedTaskCount];
+    }
+    void AfterTask()
+    {
+        completedTaskCount++;
+        SetProgressBar((float)completedTaskCount / (float)taskCount);
+    }
+    void SetProgressBar(float progress)
+    {
+        progressBar.fillAmount = progress;
+    }
+
+
     /// <summary>
-    /// 씬을 Load하면서 progressBar의 진행도를 함께 조작
+    /// 씬을 Load
     /// </summary>
     /// <param name="sceneName">Load할 씬의 이름</param>
-    /// <param name="startProgress">씬 Load 시작 시의 진행도</param>
-    /// <param name="fakeLoadStartProgress">fakeLoading을 시작할 진행도</param>
     /// <returns></returns>
-    public IEnumerator LoadGameSceneAsync(string sceneName, float startProgress = 0f, float fakeLoadStartProgress=0.9f)
+    public void LoadGameSceneAsync(string sceneName)
     {
-
-        progressBar.fillAmount = startProgress;
-        float timer = 0f;
-        float remainProgress = 1 - startProgress;
-        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
-        op.allowSceneActivation = false;
-
-        while (!op.isDone)
+        Debug.Log("LoadGameSceneAsync called, " + sceneName);
+        sceneLoadingOp= SceneManager.LoadSceneAsync(sceneName);
+        if (!autoSceneChange)
         {
-            yield return null;
-            if (op.progress < fakeLoadStartProgress)
-            {
-                progressBar.fillAmount = startProgress + op.progress*remainProgress;
-            }
-            else
-            {
-                timer += Time.unscaledDeltaTime / 2;
-                progressBar.fillAmount = Mathf.Lerp(fakeLoadStartProgress, 1f, timer);
-                if (progressBar.fillAmount >= 1f)
-                {
-                    op.allowSceneActivation = true;
-                    yield break;
-                }
-            }
+            sceneLoadingOp.allowSceneActivation = false;
         }
 
     }
