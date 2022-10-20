@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.Events;
+using TMPro;
 /// <summary>
 /// Å¸ÀÌÆ² È­¸é µ¿ÀÛ ÃÑ°ý
 /// </summary>
 public class TitleManager : MonoBehaviour
 {
+    #region singletone
     private static TitleManager instance = null;
     public static TitleManager Instance
     {
@@ -19,58 +21,76 @@ public class TitleManager : MonoBehaviour
             return instance;
         }
     }
-
-    [SerializeField]
-    GameObject gameStartButton;
-    float progress = 0;
-    AsyncOperation op;
-
     private void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+            Initiate();
+        }
+
         else
             Destroy(this.gameObject);
-        gameStartButton.SetActive(false);
+    }
+    #endregion singletone
+
+    [SerializeField]
+    GameObject gameStartButton;
+    [SerializeField]
+    Image progressBar;
+    [SerializeField]
+    TextMeshProUGUI loadingContent;
+
+    Loader loader;
+
+    public void Initiate()
+    {
+
     }
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(UpdateProgressBar());
-        StartCoroutine( StartPrework());
+        loader = new Loader(progressBar, false, loadingContent);
+        loader.AddLoadingTask(GameUpdate,"GameUpdate");
+        loader.AddLoadingTask(SystemLoading, "SystemLoading");
+        loader.AddLoadingTask(delegate {
+            loader.LoadGameSceneAsync("Lobby");
+        },"SceneLoading");
+        loader.StartLoad();
     }
     public void GameStartButton()
     {
-        op.allowSceneActivation = true;
+        loader.sceneLoadingOp.allowSceneActivation = true;
     }
-    IEnumerator UpdateProgressBar()
+    public void GameUpdate()
     {
-        while(progress < 1f)
-        {
-            yield return null;
-
-            TitleLoader.Instance.SetProgressBar(progress);
-        }
-        gameStartButton.SetActive(true);
+        loadingContent.text = "GameUpdate...";
+        Debug.Log("GameUpdate called");
     }
-    IEnumerator StartPrework()
+    public void SystemLoading()
     {
-        //TitleLoadingUIControler.Instance.SetProgressBar(0);
-        progress = 0;
-
-        yield return StartCoroutine(TitleLoader.Instance.GameUpdate());
-        progress = 0.3f;
-
-
-        yield return StartCoroutine(TitleLoader.Instance.SystemLoading());
-        progress = 0.6f;
-
-        TitleLoader.Instance.SetLoadingContent("SceneLoading...");
-        yield return StartCoroutine(TitleLoader.Instance.LoadGameSceneAsync("Lobby",progress));
-       
+        loadingContent.text = "SystemLoading...";
+        Debug.Log("SystemLoading called");
 
     }
+    //IEnumerator StartPrework()
+    //{
+    //    //TitleLoadingUIControler.Instance.SetProgressBar(0);
+    //    progress = 0;
+
+    //    yield return StartCoroutine(TitleLoader.Instance.GameUpdate());
+    //    progress = 0.3f;
 
 
-    
+    //    yield return StartCoroutine(TitleLoader.Instance.SystemLoading());
+    //    progress = 0.6f;
+
+    //    TitleLoader.Instance.SetLoadingContent("SceneLoading...");
+    //    yield return StartCoroutine(TitleLoader.Instance.LoadGameSceneAsync("Lobby", progress));
+
+
+    //}
+
+
+
 }

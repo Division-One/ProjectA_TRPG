@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class LobbyManager : MonoBehaviour
         Store,
         Count
     }
+    #region singletone
     private static LobbyManager instance = null;
     public static LobbyManager Instance
     {
@@ -31,14 +34,20 @@ public class LobbyManager : MonoBehaviour
         else
             Destroy(this.gameObject);
     }
+    #endregion singletone
+    [SerializeField]
+    List<GameObject> canvasList;
+    [SerializeField]
+    InGameLoader gameLoader;
+
+    
     // Start is called before the first frame update
     void Start()
     {
         SwitchCanvas(LobbyCanvasType.Lobby);
     }
 
-    [SerializeField]
-    List<GameObject> canvasList;
+
     public void SwitchCanvas(LobbyCanvasType type)
     {
         for (int i = 0; i < (int)LobbyCanvasType.Count; i++)
@@ -48,8 +57,9 @@ public class LobbyManager : MonoBehaviour
     public void GameStartButton()
     {
         SwitchCanvas(LobbyCanvasType.Loading);
-        StartCoroutine(InGameLoader.Instance.UpdateTipContent(4));
-        StartCoroutine(InGameLoader.Instance.LoadGameSceneAsync("GameScene"));
+        gameLoader.loader.StartLoad();
+
+
     }
     public void SetupButton()
     {
