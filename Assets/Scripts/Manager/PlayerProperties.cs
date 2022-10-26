@@ -18,11 +18,17 @@ public class PlayerProperties : MonoBehaviour
     private void Awake()
     {
         if (instance == null)
+        {
             instance = this;
+            DontDestroyOnLoad(this);
+        }
+
         else
             Destroy(this.gameObject);
     }
     #endregion singletone
+
+    public int gold = 1000;
     // Start is called before the first frame update
     void Start()
     {
