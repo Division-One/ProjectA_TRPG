@@ -44,7 +44,9 @@ public class LobbyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameLoader.Initialize();
         SwitchCanvas(LobbyCanvasType.Lobby);
+
     }
 
 

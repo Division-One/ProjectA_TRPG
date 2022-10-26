@@ -4,8 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class InGameLoader : MonoBehaviour
 {
@@ -21,16 +19,21 @@ public class InGameLoader : MonoBehaviour
     List<List<object>> tipData;
     private void Awake()
     {
-        LoadTipData();
+
+
     }
     void Start()
     {
+
+    }
+    public void Initialize()
+    {
         loader = new Loader(progressBar, true, loadingText);
+        LoadTipData();
         loader.AddLoadingTask(delegate {
             loader.LoadGameSceneAsync("GameScene");
         });
     }
-
     /// <summary>
     /// (임시 함수)
     /// </summary>
