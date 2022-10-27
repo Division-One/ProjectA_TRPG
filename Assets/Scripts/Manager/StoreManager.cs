@@ -36,13 +36,14 @@ public class StoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(storeItemCount > ItemData.Instance.itemCount) storeItemCount = ItemData.Instance.itemCount;
+        ItemData data = DataManager.Instance.itemData;
+        if (storeItemCount >data.itemCount) storeItemCount = data.itemCount;
 
         List<int> pool = new List<int>();
-        Constants.CreateUnDuplicateRandom(pool, 0, ItemData.Instance.itemCount, storeItemCount);
+        Constants.CreateUnDuplicateRandom(pool, 0, data.itemCount, storeItemCount);
         for (int i = 0; i < storeItemCount; i++)
         {
-            store.Stock(ItemData.Instance.items[pool[i]]);
+            store.Stock(data.items[pool[i]]);
         }
     }
 

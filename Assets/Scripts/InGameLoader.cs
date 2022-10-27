@@ -16,7 +16,7 @@ public class InGameLoader : MonoBehaviour
     Image portrait;
 
     public Loader loader;
-    List<List<object>> tipData;
+ 
     private void Awake()
     {
 
@@ -29,17 +29,9 @@ public class InGameLoader : MonoBehaviour
     public void Initialize()
     {
         loader = new Loader(progressBar, true, loadingText);
-        LoadTipData();
         loader.AddLoadingTask(delegate {
             loader.LoadGameSceneAsync("GameScene");
         });
-    }
-    /// <summary>
-    /// (임시 함수)
-    /// </summary>
-    public void LoadTipData()
-    {
-        tipData = CSVReader.Parsing("Data/TipText");
     }
 
 }

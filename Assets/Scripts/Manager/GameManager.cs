@@ -25,8 +25,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EventManager.Instance.GenerateEventData();
-        ContentsControler.Instance.SetContentsPanel(EventManager.Instance.GetCurrentEvent().GetCurretBlock());
+        ContentsControler.Instance.SetContentsPanel(DataManager.Instance.eventData.GetCurrentEvent().GetCurretBlock());
     }
 
     // Update is called once per frame
@@ -44,13 +43,13 @@ public class GameManager : MonoBehaviour
                 GameEnd();
                 return;
             }
-            EventManager.Instance.ToNextEvent(connect);
-            ContentsControler.Instance.SetContentsPanel(EventManager.Instance.GetCurrentEvent().GetCurretBlock());
+            DataManager.Instance.eventData.ToNextEvent(connect);
+            ContentsControler.Instance.SetContentsPanel(DataManager.Instance.eventData.GetCurrentEvent().GetCurretBlock());
         }
         else
         {
-            EventManager.Instance.ToNextBlock(connect);
-            ContentsControler.Instance.AppendBlock(EventManager.Instance.GetCurrentEvent().GetCurretBlock());
+            DataManager.Instance.eventData.ToNextBlock(connect);
+            ContentsControler.Instance.AppendBlock(DataManager.Instance.eventData.GetCurrentEvent().GetCurretBlock());
         }
     }
     public void GameEnd()
