@@ -2,42 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerProperties : MonoBehaviour
+public class PlayerProperties
 {
-    #region singletone
-    private static PlayerProperties instance = null;
-    public static PlayerProperties Instance
-    {
-        get
-        {
-            if (instance == null)
-                return null;
-            return instance;
-        }
-    }
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(this);
-        }
 
-        else
-            Destroy(this.gameObject);
-    }
-    #endregion singletone
-
-    public int gold = 1000;
+   int gold = 1000;
     // Start is called before the first frame update
-    void Start()
+    public int GetGold()
     {
-        
+        return gold;
     }
-
-    // Update is called once per frame
-    void Update()
+   public void UseGold(int amount)
     {
-        
+        gold -= amount;
+    }
+    public void GainGold(int amount)
+    {
+        gold += amount;
     }
 }

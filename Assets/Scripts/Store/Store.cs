@@ -58,10 +58,10 @@ public class Store : MonoBehaviour
     {
         if (selectedItem == null) 
             return;
-        if (PlayerProperties.Instance.gold < selectedItem.itemPrice)
+        if (DataManager.Instance.playerProperty.GetGold()< selectedItem.itemPrice)
             return;
 
-        PlayerProperties.Instance.gold -= selectedItem.itemPrice;
+        DataManager.Instance.playerProperty.UseGold(selectedItem.itemPrice);
         SetGold();
 
         ItemContainer instance = Instantiate(ItemContainerPrefab, purchasedItemParent);
@@ -71,6 +71,6 @@ public class Store : MonoBehaviour
     }
     public void SetGold()
     {
-        heldGold.text = PlayerProperties.Instance.gold.ToString();
+        heldGold.text = DataManager.Instance.playerProperty.GetGold().ToString();
     }
 }

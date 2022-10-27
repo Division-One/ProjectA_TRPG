@@ -51,6 +51,7 @@ public class TitleManager : MonoBehaviour
     void Start()
     {
         loader = new Loader(progressBar, false, loadingContent);
+        loader.AddLoadingTask(GenerateData,"DataLoading");
         loader.AddLoadingTask(GameUpdate,"GameUpdate");
         loader.AddLoadingTask(SystemLoading, "SystemLoading");
         loader.AddLoadingTask(delegate {
@@ -61,6 +62,11 @@ public class TitleManager : MonoBehaviour
     public void GameStartButton()
     {
         loader.sceneLoadingOp.allowSceneActivation = true;
+    }
+    public void GenerateData()
+    {
+        loadingContent.text = "DataLoading...";
+        DataManager.Instance.GenerateData();
     }
     public void GameUpdate()
     {
