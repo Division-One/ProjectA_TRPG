@@ -398,7 +398,7 @@ MonoBehaviour:
   m_text: Game Start
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
-  m_sharedMaterial: {fileID: 7126041168094234136, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
+  m_sharedMaterial: {fileID: 4048727869060516815, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -921,7 +921,7 @@ PrefabInstance:
     - target: {fileID: 752917798655676849, guid: f1c478fb2b6df6145b95cd4f98fc7914, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 7126041168094234136, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
+      objectReference: {fileID: 4048727869060516815, guid: 879a5d3f44f21ee468720848741c1d0d, type: 2}
     - target: {fileID: 752917798655676851, guid: f1c478fb2b6df6145b95cd4f98fc7914, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
