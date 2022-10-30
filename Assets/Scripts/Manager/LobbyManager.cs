@@ -59,7 +59,7 @@ public class LobbyManager : MonoBehaviour
     public void GameStartButton()
     {
         SwitchCanvas(LobbyCanvasType.Loading);
-        gameLoader.loader.StartLoad();
+        StartCoroutine( gameLoader.loader.StartLoad());
 
 
     }

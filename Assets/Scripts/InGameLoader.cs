@@ -28,10 +28,14 @@ public class InGameLoader : MonoBehaviour
     }
     public void Initialize()
     {
-        loader = new Loader(progressBar, true, loadingText);
+        loader.Initialize(progressBar, true,loadingText);
+        List<int> pool = new List<int>();
+        Constants.CreateUnDuplicateRandom(pool,0, DataManager.Instance.tipData.tipData.Count-1,3);
+        
         loader.AddLoadingTask(delegate {
             loader.LoadGameSceneAsync("GameScene");
-        });
+        }, DataManager.Instance.tipData.tipData[pool[0]]);
+
     }
 
 }

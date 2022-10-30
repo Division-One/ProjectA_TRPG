@@ -40,7 +40,7 @@ public class TitleManager : MonoBehaviour
     Image progressBar;
     [SerializeField]
     TextMeshProUGUI loadingContent;
-
+    [SerializeField]
     Loader loader;
 
     public void Initiate()
@@ -50,14 +50,15 @@ public class TitleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        loader = new Loader(progressBar, false, loadingContent);
+        loader.Initialize(progressBar, false, loadingContent);
         loader.AddLoadingTask(GenerateData,"DataLoading");
         loader.AddLoadingTask(GameUpdate,"GameUpdate");
         loader.AddLoadingTask(SystemLoading, "SystemLoading");
         loader.AddLoadingTask(delegate {
             loader.LoadGameSceneAsync("Lobby");
         },"SceneLoading");
-        loader.StartLoad();
+        loader.OnLoadCompleted += delegate { gameStartButton.gameObject.SetActive(true); };
+        StartCoroutine( loader.StartLoad());
     }
     public void GameStartButton()
     {

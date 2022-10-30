@@ -26,6 +26,13 @@ static class Constants
     public const int CSV_ITEM_SHAPE_IDX = 5;
 
 
+    /// <summary>
+    /// 중복되지 않은 랜덤 뽑기. pool에 n개의 min~max 정수가 담기게 됨.
+    /// </summary>
+    /// <param name="pool">뽑은 결과를 담을 리스트</param>
+    /// <param name="min">랜덤 정수 최소 값</param>
+    /// <param name="max">랜덤 정수 최대 값</param>
+    /// <param name="n">랜덤 정수 갯수</param>
     public static void CreateUnDuplicateRandom(List<int> pool, int min, int max, int n)
     {
         int currentNumber = Random.Range(min, max);
