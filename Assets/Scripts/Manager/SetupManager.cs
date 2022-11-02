@@ -35,7 +35,14 @@ public class SetupManager: MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Initialize();
+    }
+    public void Initialize()
+    {
+        BGMManager.Instance.SetVolume(bgmVolumeControl.defaultFill);
+        bgmVolumeControl.AddDecreaseListener(delegate { BGMManager.Instance.DecreaseVolume(bgmVolumeControl.threshold); });
+        bgmVolumeControl.AddIncreaseListener(delegate { BGMManager.Instance.IncreaseVolume(bgmVolumeControl.threshold); });
+
     }
     public void CloseButton()
     {

@@ -13,10 +13,8 @@ public class SeparatedVolume: MonoBehaviour
     [SerializeField]
     Button incButton;
 
-    [SerializeField]
-    float defaultFill = 0.4f;
-    [SerializeField]
-    float threshold = 0.2f;
+    public float defaultFill = 0.4f;
+    public float threshold = 0.2f;
 
     // Start is called before the first frame update
     void Start()
